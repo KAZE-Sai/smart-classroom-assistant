@@ -37,32 +37,12 @@ up on missed lectures — all through a simple chat interface.
 - **Intent Routing** — Custom regex-based classifier
 
 ---
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Python 3.10+
-- Free Groq API key from https://console.groq.com
-
-### Installation
-
-# Clone the repo
-git clone https://github.com/YOUR_USERNAME/smart-classroom-assistant.git
-cd smart-classroom-assistant
-
-# Install dependencies
-pip install -r backend/requirements.txt
-
-# Setup environment
-cp .env.example .env
-# Add your GROQ_API_KEY inside .env
-
-# Run the app
-cd backend
-python app.py
-
-# Open in browser
-http://localhost:5000
+## 🚀 How to Run
+1. Get free Groq API key from https://console.groq.com
+2. Install dependencies: `pip install -r backend/requirements.txt`
+3. Set API key: `set GROQ_API_KEY=your_key_here`
+4. Run: `cd smart-classroom/backend` then `python app.py`
+5. Open: `http://localhost:5000`
 
 ---
 
