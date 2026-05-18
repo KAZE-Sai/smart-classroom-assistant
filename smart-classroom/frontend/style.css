@@ -1,0 +1,1036 @@
+/* ── Batman Black + Ion Blue ────────────────────────────────────────────── */
+:root {
+  --bg:        #0a0a0a;
+  --bg-alt:    #111111;
+  --surface:   #1a1a1a;
+  --surface2:  #222222;
+  --border:    #38bdf8;
+  --border-dim: #1a4a5e;
+  --text:      #e8e8e8;
+  --text-dim:  #607080;
+  --text-muted:#2a3038;
+  --accent:    #38bdf8;
+  --accent2:   #0ea5e9;
+  --accent-dim:#0c2233;
+  --green:     #38bdf8;
+  --red:       #f87171;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Layout */
+.layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* ── Left Sidebar ─────────────────────────────────────────────────────── */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--bg-alt);
+  border-right: 1px solid var(--border-dim);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease, min-width 0.25s ease;
+  overflow: hidden;
+}
+
+.sidebar.collapsed { width: 0; min-width: 0; border-right: none; }
+
+/* Icon-only mini mode */
+.sidebar.mini {
+  width: 52px;
+  min-width: 52px;
+}
+
+.sidebar.mini .sidebar-header span,
+.sidebar.mini .session-label,
+.sidebar.mini .session-actions {
+  display: none;
+}
+
+.sidebar.mini .new-chat-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+}
+
+.sidebar.mini .sidebar-header {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+.sidebar.mini .session-list {
+  padding: 6px 4px;
+  align-items: center;
+}
+
+.sidebar.mini .session-item {
+  justify-content: center;
+  padding: 10px 0;
+  width: 44px;
+  border-radius: 10px;
+}
+
+.sidebar.mini .session-icon {
+  font-size: 1.1rem;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 16px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border-dim);
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.new-chat-btn {
+  background: var(--surface);
+  border: 1px solid var(--border-dim);
+  color: var(--accent);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.new-chat-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+.session-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.83rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s, color 0.15s;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.session-item:hover { background: var(--surface); color: var(--text); }
+
+.session-item.active {
+  background: var(--surface);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-dim);
+}
+
+.session-item .session-icon { font-size: 0.9rem; flex-shrink: 0; }
+.session-item .session-label { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+
+.session-actions { display: none; gap: 2px; flex-shrink: 0; }
+
+.session-item:hover .session-actions,
+.session-item.active .session-actions { display: flex; }
+
+.session-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  opacity: 0.5;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.session-btn:hover { opacity: 1; background: var(--border); }
+.session-btn.delete:hover { background: #2d1b1b; }
+
+/* ── Main App ─────────────────────────────────────────────────────────── */
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  min-width: 0;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-dim);
+  background: var(--bg-alt);
+  flex-shrink: 0;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover { background: var(--surface); color: var(--text); }
+
+.avatar {
+  width: 32px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* EVE */
+.eve {
+  width: 32px;
+  height: 42px;
+  animation: eve-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px #93c5fd88);
+}
+
+@keyframes eve-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-5px); }
+}
+
+.eve-body {
+  animation: eve-breathe 3s ease-in-out infinite;
+}
+
+@keyframes eve-breathe {
+  0%, 100% { ry: 18; }
+  50%       { ry: 19; }
+}
+
+.eve-eye-l, .eve-eye-r {
+  animation: eve-blink 4s ease-in-out infinite;
+}
+
+@keyframes eve-blink {
+  0%, 88%, 100% { opacity: 1; }
+  92%            { opacity: 0; }
+}
+
+.eve-arm-l {
+  animation: eve-arm-l 3s ease-in-out infinite;
+  transform-origin: 9px 44px;
+}
+
+.eve-arm-r {
+  animation: eve-arm-r 3s ease-in-out infinite;
+  transform-origin: 51px 44px;
+}
+
+@keyframes eve-arm-l {
+  0%, 100% { transform: rotate(-20deg); }
+  50%       { transform: rotate(-32deg); }
+}
+
+@keyframes eve-arm-r {
+  0%, 100% { transform: rotate(35deg); }
+  50%       { transform: rotate(22deg); }
+}
+
+@keyframes eve-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+.yan-body { animation: eve-pulse 3s ease-in-out infinite; }
+
+@keyframes eve-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.92; }
+}
+
+.yan-eye-l, .yan-eye-r {
+  animation: yan-blink 4s ease-in-out infinite;
+}
+
+@keyframes yan-blink {
+  0%, 88%, 100% { opacity: 1; }
+  92%            { opacity: 0; }
+}
+
+.yan-arm-l {
+  animation: eve-arm-left 3s ease-in-out infinite;
+  transform-origin: 10px 29px;
+}
+
+.yan-arm-r {
+  animation: eve-arm-right 3s ease-in-out infinite;
+  transform-origin: 38px 29px;
+}
+
+@keyframes eve-arm-left {
+  0%, 100% { transform: rotate(0deg); }
+  50%       { transform: rotate(-10deg); }
+}
+
+@keyframes eve-arm-right {
+  0%, 100% { transform: rotate(0deg); }
+  50%       { transform: rotate(10deg); }
+}
+
+.yan-tail {
+  animation: yan-tail-sway 3s ease-in-out infinite;
+  transform-origin: 30px 36px;
+}
+
+@keyframes yan-tail-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50%       { transform: rotate(8deg); }
+}
+
+.yan-ear-l {
+  animation: yan-ear 2.5s ease-in-out infinite;
+  transform-origin: 14px 14px;
+}
+
+.yan-ear-r {
+  animation: yan-ear 2.5s ease-in-out infinite 0.3s;
+  transform-origin: 34px 14px;
+}
+
+@keyframes yan-ear {
+  0%, 100% { transform: rotate(0deg); }
+  50%       { transform: rotate(-5deg); }
+}
+
+.name { font-weight: 700; font-size: 1rem; color: var(--accent); }
+
+.status {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Chat ─────────────────────────────────────────────────────────────── */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scroll-behavior: smooth;
+  background: var(--bg);
+  position: relative;
+}
+
+.chat-box::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3C!-- Outer ring --%3E%3Ccircle cx='100' cy='100' r='96' fill='none' stroke='%23ffffff' stroke-width='7' opacity='1'/%3E%3C!-- Petal 1 --%3E%3Cpath d='M100 100 C85 75 65 55 80 38 C90 26 110 26 120 38 C135 55 115 75 100 100Z' fill='%23ffffff' opacity='1'/%3E%3C!-- Petal 2 --%3E%3Cpath d='M100 100 C85 75 65 55 80 38 C90 26 110 26 120 38 C135 55 115 75 100 100Z' fill='%23ffffff' opacity='1' transform='rotate(72 100 100)'/%3E%3C!-- Petal 3 --%3E%3Cpath d='M100 100 C85 75 65 55 80 38 C90 26 110 26 120 38 C135 55 115 75 100 100Z' fill='%23ffffff' opacity='1' transform='rotate(144 100 100)'/%3E%3C!-- Petal 4 --%3E%3Cpath d='M100 100 C85 75 65 55 80 38 C90 26 110 26 120 38 C135 55 115 75 100 100Z' fill='%23ffffff' opacity='1' transform='rotate(216 100 100)'/%3E%3C!-- Petal 5 --%3E%3Cpath d='M100 100 C85 75 65 55 80 38 C90 26 110 26 120 38 C135 55 115 75 100 100Z' fill='%23ffffff' opacity='1' transform='rotate(288 100 100)'/%3E%3C!-- Dividing lines --%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='2' opacity='1'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='2' opacity='1' transform='rotate(72 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='2' opacity='1' transform='rotate(144 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='2' opacity='1' transform='rotate(216 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='2' opacity='1' transform='rotate(288 100 100)'/%3E%3C!-- Extra lines between petals --%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='1.5' opacity='1' transform='rotate(36 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='1.5' opacity='1' transform='rotate(108 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='1.5' opacity='1' transform='rotate(180 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='1.5' opacity='1' transform='rotate(252 100 100)'/%3E%3Cline x1='100' y1='100' x2='100' y2='18' stroke='%230a0a0a' stroke-width='1.5' opacity='1' transform='rotate(324 100 100)'/%3E%3C!-- Center circle --%3E%3Ccircle cx='100' cy='100' r='9' fill='%23ffffff' opacity='1'/%3E%3Ccircle cx='100' cy='100' r='5' fill='%230a0a0a' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+}
+
+.chat-box > * { position: relative; z-index: 1; }
+
+.message {
+  display: flex;
+  gap: 10px;
+  max-width: 85%;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.message.user { align-self: flex-end; flex-direction: row-reverse; }
+.message.bot  { align-self: flex-start; }
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.93rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.user .bubble {
+  background: var(--accent);
+  color: var(--bg);
+  border-bottom-right-radius: 4px;
+  font-weight: 500;
+}
+
+.bot .bubble {
+  background: var(--surface);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--border-dim);
+}
+
+.bot .bubble strong { color: var(--accent); }
+.bot .bubble em { color: var(--accent2); }
+.bot .bubble code { background: var(--bg-alt); color: var(--accent); padding: 2px 5px; border-radius: 4px; font-size: 0.88em; }
+
+/* Typing — EVE thinking */
+.eve-thinking {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+}
+
+.eve-think-robot {
+  width: 50px;
+  height: 66px;
+  animation: eve-think-float 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px #93c5fd88);
+  flex-shrink: 0;
+}
+
+@keyframes eve-think-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%       { transform: translateY(-5px) rotate(4deg); }
+}
+
+.think-eye-l, .think-eye-r {
+  animation: think-eye-scan 1.2s ease-in-out infinite;
+}
+
+@keyframes think-eye-scan {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.think-arm-l {
+  animation: think-arm-l 1.2s ease-in-out infinite;
+  transform-origin: 6px 22px;
+}
+
+.think-arm-r {
+  animation: think-arm-r 1.2s ease-in-out infinite;
+  transform-origin: 34px 22px;
+}
+
+@keyframes think-arm-l {
+  0%, 100% { transform: rotate(0deg); }
+  50%       { transform: rotate(-20deg); }
+}
+
+@keyframes think-arm-r {
+  0%, 100% { transform: rotate(0deg); }
+  50%       { transform: rotate(20deg); }
+}
+
+.think-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.think-dots span {
+  width: 7px;
+  height: 7px;
+  background: #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #38bdf8;
+  animation: think-dot 1.2s ease-in-out infinite;
+}
+
+.think-dots span:nth-child(2) { animation-delay: 0.2s; }
+.think-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes think-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+  30%            { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Suggestions */
+.suggestions { display: none; }
+
+/* ── Right Sidebar ────────────────────────────────────────────────────── */
+.right-sidebar {
+  width: 200px;
+  min-width: 200px;
+  background: var(--bg-alt);
+  border-left: 1px solid var(--border-dim);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.right-sidebar .sidebar-header {
+  padding: 18px 16px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border-dim);
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 10px;
+}
+
+.quick-actions button {
+  background: var(--surface);
+  border: 1px solid var(--border-dim);
+  color: var(--text-dim);
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-family: inherit;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+  line-height: 1.3;
+}
+
+.quick-actions button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+/* ── Input ────────────────────────────────────────────────────────────── */
+.input-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 20px 20px;
+  border-top: 1px solid var(--border-dim);
+  background: var(--bg-alt);
+  flex-shrink: 0;
+}
+
+textarea {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  color: var(--text);
+  padding: 11px 14px;
+  font-size: 0.93rem;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  max-height: 140px;
+  overflow-y: auto;
+  transition: border-color 0.2s;
+}
+
+textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-dim); }
+textarea::placeholder { color: var(--text-muted); }
+
+#sendBtn {
+  width: 42px; height: 42px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+}
+
+#sendBtn:hover { background: var(--accent2); }
+#sendBtn:active { transform: scale(0.95); }
+#sendBtn:disabled { background: var(--surface); cursor: not-allowed; opacity: 0.5; }
+
+/* Empty state */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-state .big-icon { font-size: 2.5rem; }
+
+/* ── EVE Greeting Overlay ─────────────────────────────────────────────── */
+.eve-greeting {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+  animation: greeting-in 0.5s ease forwards;
+  pointer-events: none;
+}
+
+.eve-greeting-out {
+  animation: greeting-out 0.6s ease forwards !important;
+}
+
+@keyframes greeting-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(30px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes greeting-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+}
+
+.eve-wave {
+  width: 90px;
+  height: 120px;
+  filter: drop-shadow(0 0 12px #38bdf8aa) drop-shadow(0 0 24px #38bdf844);
+  animation: eve-greeting-float 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes eve-greeting-float {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-6px); }
+}
+
+.eve-wave-arm {
+  animation: eve-wave-anim 0.4s ease-in-out infinite alternate;
+  transform-origin: 51px 52px;
+}
+
+@keyframes eve-wave-anim {
+  from { transform: rotate(-40deg); }
+  to   { transform: rotate(-10deg); }
+}
+
+.eve-greeting-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #38bdf8;
+  text-shadow: 0 0 10px #38bdf888;
+  letter-spacing: 0.05em;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── Attach button & file preview ────────────────────────────────────── */
+#attachBtn {
+  width: 38px;
+  height: 38px;
+  background: var(--surface);
+  color: var(--text-dim);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+#attachBtn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: var(--accent);
+  max-width: 160px;
+  flex-shrink: 0;
+  order: -1;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 4px;
+}
+
+.file-preview span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.file-preview button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.file-preview button:hover { opacity: 1; }
+
+/* ── Enhancements ─────────────────────────────────────────────────────── */
+
+/* Ripple on buttons */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(56,189,248,0.35);
+  transform: scale(0);
+  animation: ripple-anim 0.5s linear;
+  pointer-events: none;
+}
+@keyframes ripple-anim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* Message reactions */
+.message.bot:hover .msg-reactions { opacity: 1; }
+.msg-reactions {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.msg-reactions button {
+  background: var(--surface);
+  border: 1px solid var(--border-dim);
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--text-dim);
+  transition: all 0.15s;
+}
+.msg-reactions button:hover,
+.msg-reactions button.reacted {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: scale(1.15);
+}
+
+/* Scroll-to-bottom button */
+#scrollBtn {
+  position: absolute;
+  bottom: 80px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px #38bdf866;
+  animation: fadeIn 0.2s ease;
+  z-index: 10;
+}
+#scrollBtn:hover { background: var(--accent2); }
+
+/* Nyx mood eye colors */
+.eve-eye-l, .eve-eye-r { transition: fill 0.6s ease; }
+.mood-quiz    .eve-eye-l, .mood-quiz    .eve-eye-r { fill: #fde68a !important; }
+.mood-plan    .eve-eye-l, .mood-plan    .eve-eye-r { fill: #86efac !important; }
+.mood-missed  .eve-eye-l, .mood-missed  .eve-eye-r { fill: #f87171 !important; }
+.mood-think   .eve-eye-l, .mood-think   .eve-eye-r { fill: #c084fc !important; }
+.mood-default .eve-eye-l, .mood-default .eve-eye-r { fill: url(#eveEye) !important; }
+
+/* Thinking status dot pulse */
+.dot.thinking {
+  background: #c084fc !important;
+  animation: pulse 0.5s infinite !important;
+}
+
+/* Send button particle burst */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  pointer-events: none;
+  animation: particle-fly 0.6s ease-out forwards;
+  z-index: 9999;
+}
+@keyframes particle-fly {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+/* Bot bubble entrance */
+.message.bot .bubble {
+  animation: bubble-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes bubble-in {
+  from { transform: scale(0.85) translateY(8px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* User bubble entrance */
+.message.user .bubble {
+  animation: user-bubble-in 0.25s ease;
+}
+@keyframes user-bubble-in {
+  from { transform: translateX(20px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* ── Voice button ─────────────────────────────────────────────────────── */
+#voiceBtn {
+  width: 38px;
+  height: 38px;
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  box-shadow: 0 0 8px var(--accent-dim);
+}
+#voiceBtn:hover { background: var(--accent); color: var(--bg); }
+
+/* ── Voice Modal ──────────────────────────────────────────────────────── */
+.voice-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.voice-modal-box {
+  background: #0f0f0f;
+  border: 1px solid var(--border-dim);
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  width: 380px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  box-shadow: 0 0 40px #38bdf822;
+}
+
+.voice-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.voice-close:hover { color: var(--text); }
+
+.voice-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.voice-eve {
+  width: 100px;
+  height: 130px;
+  filter: drop-shadow(0 0 10px #38bdf888);
+  animation: eve-float 3s ease-in-out infinite;
+}
+
+/* Speaking animation on EVE */
+.voice-eve.speaking {
+  filter: drop-shadow(0 0 18px #38bdf8cc) drop-shadow(0 0 30px #38bdf855);
+}
+
+.vm-eye-l, .vm-eye-r { transition: fill 0.3s; }
+.voice-eve.listening .vm-eye-l,
+.voice-eve.listening .vm-eye-r { fill: #86efac !important; }
+.voice-eve.speaking  .vm-eye-l,
+.voice-eve.speaking  .vm-eye-r { fill: #fde68a !important; }
+
+/* Sound wave bars */
+.voice-bars {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 28px;
+}
+
+.voice-bars span {
+  width: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  height: 6px;
+  transition: height 0.1s;
+}
+
+.voice-bars.active span:nth-child(1) { animation: bar 0.8s ease-in-out infinite 0.0s; }
+.voice-bars.active span:nth-child(2) { animation: bar 0.8s ease-in-out infinite 0.15s; }
+.voice-bars.active span:nth-child(3) { animation: bar 0.8s ease-in-out infinite 0.3s; }
+.voice-bars.active span:nth-child(4) { animation: bar 0.8s ease-in-out infinite 0.15s; }
+.voice-bars.active span:nth-child(5) { animation: bar 0.8s ease-in-out infinite 0.0s; }
+
+@keyframes bar {
+  0%, 100% { height: 4px; }
+  50%       { height: 22px; }
+}
+
+.voice-status {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+.voice-transcript {
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-align: center;
+  min-height: 20px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.voice-reply {
+  font-size: 0.9rem;
+  color: var(--text);
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-height: 48px;
+  width: 100%;
+  line-height: 1.6;
+  display: none;
+}
+
+.voice-controls { margin-top: 4px; }
+
+.mic-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 0 16px #38bdf844;
+}
+
+.mic-btn:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 24px #38bdf888; }
+.mic-btn.recording {
+  background: #f87171;
+  border-color: #f87171;
+  color: white;
+  animation: mic-pulse 1s ease-in-out infinite;
+  box-shadow: 0 0 24px #f8717166;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+
+.voice-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
