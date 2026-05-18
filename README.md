@@ -38,14 +38,6 @@ up on missed lectures — all through a simple chat interface.
 
 ---
 
-## 📸 Demo
-
-> Chat interface with Nyx answering a student's doubt
-
-*(Add a screenshot here once running)*
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
